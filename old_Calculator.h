@@ -21,7 +21,7 @@ public:
 
 protected:
 	//按钮
-	QPushButton * button_0;
+	QPushButton* button_0;
 	QPushButton* button_1;
 	QPushButton* button_2;
 	QPushButton* button_3;
@@ -74,14 +74,14 @@ private slots:
 	//处理按钮点击信号的槽函数
 	void button_0_clicked();
 	void button_1_clicked();
-	//void button_2_clicked();
-	//void button_3_clicked();
-	//void button_4_clicked();
-	//void button_5_clicked();
-	//void button_6_clicked();
-	//void button_7_clicked();
-	//void button_8_clicked();
-	//void button_9_clicked();
+	void button_2_clicked();
+	void button_3_clicked();
+	void button_4_clicked();
+	void button_5_clicked();
+	void button_6_clicked();
+	void button_7_clicked();
+	void button_8_clicked();
+	void button_9_clicked();
 	void button_plus_clicked();
 	void button_minus_clicked();
 	//void button_multiply_clicked();
@@ -103,7 +103,7 @@ private slots:
 	//void button_tan_clicked();
 	//void button_opp_clicked();
 	//void button_00_clicked();
-	//void button_decpoint_clicked();
+	void button_decpoint_clicked();
 	//void button_Mod_clicked();
 	//void button_Lsh_clicked();
 	//void button_Rsh_clicked();

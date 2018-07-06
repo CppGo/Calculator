@@ -304,6 +304,214 @@ void old_Calculator::button_1_clicked()
 	mark_occupy = false;
 }
 
+void old_Calculator::button_2_clicked()
+{
+	if (decp)
+	{
+		output += "2";
+
+		current_Num += 2 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "2";
+		}
+		else
+		{
+			output += "2";
+		}
+		current_Num = current_Num * 10 + 2;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_3_clicked()
+{
+	if (decp)
+	{
+		output += "3";
+
+		current_Num += 3 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "3";
+		}
+		else
+		{
+			output += "3";
+		}
+		current_Num = current_Num * 10 + 3;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_4_clicked()
+{
+	if (decp)
+	{
+		output += "4";
+
+		current_Num += 4 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "4";
+		}
+		else
+		{
+			output += "4";
+		}
+		current_Num = current_Num * 10 + 4;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_5_clicked()
+{
+	if (decp)
+	{
+		output += "5";
+
+		current_Num += 5 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "5";
+		}
+		else
+		{
+			output += "5";
+		}
+		current_Num = current_Num * 10 + 5;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_6_clicked()
+{
+	if (decp)
+	{
+		output += "6";
+
+		current_Num += 6 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "6";
+		}
+		else
+		{
+			output += "6";
+		}
+		current_Num = current_Num * 10 + 6;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_7_clicked()
+{
+	if (decp)
+	{
+		output += "7";
+
+		current_Num += 7 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "7";
+		}
+		else
+		{
+			output += "7";
+		}
+		current_Num = current_Num * 10 + 7;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_8_clicked()
+{
+	if (decp)
+	{
+		output += "8";
+
+		current_Num += 8 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "8";
+		}
+		else
+		{
+			output += "8";
+		}
+		current_Num = current_Num * 10 + 8;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void old_Calculator::button_9_clicked()
+{
+	if (decp)
+	{
+		output += "9";
+
+		current_Num += 9 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "9";
+		}
+		else
+		{
+			output += "9";
+		}
+		current_Num = current_Num * 10 + 9;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
 void old_Calculator::button_plus_clicked()
 {
 	//按下运算符后，立马进行运算
@@ -334,13 +542,14 @@ void old_Calculator::button_plus_clicked()
 	{
 		saved_Num = current_Num;
 		current_Num = 0;
-
 		mark = true;
 		sign = '+';
 	}
 	output = QString::fromStdString(Delete_zeros(std::to_string(saved_Num)));
 	lineEdit->setText(output);
 	mark_occupy = true;
+	decp_counter = 1;
+	decp = false;
 }
 
 void old_Calculator::button_minus_clicked()
@@ -373,13 +582,14 @@ void old_Calculator::button_minus_clicked()
 	{
 		saved_Num = current_Num;
 		current_Num = 0;
-
 		mark = true;
 		sign = '-';
 	}
 	output = QString::fromStdString(Delete_zeros(std::to_string(saved_Num)));
 	lineEdit->setText(output);
 	mark_occupy = true;
+	decp_counter = 1;
+	decp = false;
 }
 
 void old_Calculator::button_equal_clicked()
@@ -397,12 +607,19 @@ void old_Calculator::button_equal_clicked()
 		default:
 			break;
 		}
+		saved_Num = 0;
+		current_Num = 0;
 	}
-	saved_Num = 0;
-	current_Num = answer;
-
+	//不支持结果参与运算，所以每次运算过后建议CE清除
 	output = QString::fromStdString(Delete_zeros(std::to_string(answer)));
 	lineEdit->setText(output);
 	mark_occupy = false;
 	mark = false;
+	decp_counter = 1;
+	decp = false;
+}
+
+void old_Calculator::button_decpoint_clicked()
+{
+	
 }
