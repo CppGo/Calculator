@@ -4,56 +4,82 @@ Calculator::Calculator(QWidget *parent)
 	: QWidget(parent)
 {
 	//ui.setupUi(this);
-	//初始化部件对象指针
-	button_0 = new QPushButton("0", this);
-	button_1 = new QPushButton("1", this);
-	button_2 = new QPushButton("2", this);
-	button_3 = new QPushButton("3", this);
-	button_4 = new QPushButton("4", this);
-	button_5 = new QPushButton("5", this);
-	button_6 = new QPushButton("6", this);
-	button_7 = new QPushButton("7", this);
-	button_8 = new QPushButton("8", this);
-	button_9 = new QPushButton("9", this);
-	button_plus = new QPushButton("+", this);
-	button_minus = new QPushButton("-", this);
-	button_multiply = new QPushButton("*", this);
-	button_devide = new QPushButton("/", this);
-	button_equal = new QPushButton("=", this);
-	button_clear = new QPushButton("CE", this);
-	button_clearAll = new QPushButton("C", this);
-	button_square = new QPushButton("x^2", this);
-	button_cube = new QPushButton("x^3", this);
-	button_sq_root = new QPushButton("sqr", this);
-	button_reciprocal = new QPushButton("1/x", this);
-	button_x_Y = new QPushButton("x^y", this);
-	button_10_X = new QPushButton("10^x", this);
-	button_Exp = new QPushButton("Exp", this);
-	button_lg = new QPushButton("lg", this);
-	button_ln = new QPushButton("ln", this);
-	button_sin = new QPushButton("sin", this);
-	button_cos = new QPushButton("cos", this);
-	button_tan = new QPushButton("tan", this);
-	button_opp = new QPushButton("+/-", this);
-	button_00 = new QPushButton("00", this);
-	button_decpoint = new QPushButton(".", this);
-	button_Mod = new QPushButton("Mod", this);
-	button_Lsh = new QPushButton("Lsh", this);
-	button_Rsh = new QPushButton("Rsh", this);
-	button_RoL = new QPushButton("RoL", this);
-	button_RoR = new QPushButton("RoR", this);
-	button_Or = new QPushButton("Or", this);
-	button_Xor = new QPushButton("Xor", this);
-	button_Not = new QPushButton("Not", this);
-	button_And = new QPushButton("And", this);
-	button_backspace = new QPushButton("<-", this);
-	button_factorial = new QPushButton("n!", this);
-	button_left = new QPushButton("(", this);
-	button_right = new QPushButton(")", this);
 
-	lineEdit = new QLineEdit(this);
+	//构建一个QWidget
+	//QWidget *widget = new QWidget;
+
+	//将此widget设为CentralWidget
+	//this->setCentralWidget(widget);
+
+	//初始化变量
+	current_Num = 0;
+	saved_Num = 0;
+	answer = 0;
+	output = "";
+	
+	mark = false;
+	mark_occupy = false;
+
+	decp = false;
+	decp_counter = 1;
+
+	Error = false;
+
+	//初始化部件对象指针
+	button_0 = new QPushButton("0");
+	button_1 = new QPushButton("1");
+	button_2 = new QPushButton("2");
+	button_3 = new QPushButton("3");
+	button_4 = new QPushButton("4");
+	button_5 = new QPushButton("5");
+	button_6 = new QPushButton("6");
+	button_7 = new QPushButton("7");
+	button_8 = new QPushButton("8");
+	button_9 = new QPushButton("9");
+	button_plus = new QPushButton("+");
+	button_minus = new QPushButton("-");
+	button_multiply = new QPushButton("*");
+	button_devide = new QPushButton("/");
+	button_equal = new QPushButton("=");
+	button_clear = new QPushButton("CE");
+	button_clearAll = new QPushButton("C");
+	button_square = new QPushButton("x^2");
+	button_cube = new QPushButton("x^3");
+	button_sq_root = new QPushButton("sqr");
+	button_reciprocal = new QPushButton("1/x");
+	button_x_Y = new QPushButton("x^y");
+	button_10_X = new QPushButton("10^x");
+	button_Exp = new QPushButton("Exp");
+	button_lg = new QPushButton("lg");
+	button_ln = new QPushButton("ln");
+	button_sin = new QPushButton("sin");
+	button_cos = new QPushButton("cos");
+	button_tan = new QPushButton("tan");
+	button_opp = new QPushButton("+/-");
+	button_00 = new QPushButton("00");
+	button_decpoint = new QPushButton(".");
+	button_Mod = new QPushButton("Mod");
+	button_Lsh = new QPushButton("Lsh");
+	button_Rsh = new QPushButton("Rsh");
+	button_RoL = new QPushButton("RoL");
+	button_RoR = new QPushButton("RoR");
+	button_Or = new QPushButton("Or");
+	button_Xor = new QPushButton("Xor");
+	button_Not = new QPushButton("Not");
+	button_And = new QPushButton("And");
+	button_backspace = new QPushButton("<-");
+	button_factorial = new QPushButton("n!");
+	button_left = new QPushButton("(");
+	button_right = new QPushButton(")");
+
+	lineEdit = new QLineEdit("0");
+
 	//禁止编辑文本框
 	lineEdit->setReadOnly(true);
+
+	lineEdit->setAlignment(Qt::AlignRight);
+	lineEdit->setMaxLength(15);
+
 	//设置固定大小
 	lineEdit->setFixedSize(800, 70);
 
@@ -102,6 +128,7 @@ Calculator::Calculator(QWidget *parent)
 	button_factorial->setFixedSize(80, 80);
 	button_left->setFixedSize(80, 80);
 	button_right->setFixedSize(80, 80);
+
 	//网格布局
 	QGridLayout *Grid = new QGridLayout;
 	Grid->addWidget(lineEdit, 1, 1, 1, 9, Qt::Alignment());
@@ -153,53 +180,211 @@ Calculator::Calculator(QWidget *parent)
 	Grid->addWidget(button_decpoint, 6, 8, 1, 1, Qt::Alignment());
 	Grid->addWidget(button_equal, 6, 9, 1, 1, Qt::Alignment());
 	
+	//Grid->setSizeConstraint(QLayout::SetFixedSize);
 	//把Grid布局设置给当前创建的对象
 	this->setLayout(Grid);
+	//widget->setLayout(Grid);
+	//ui.centralWidget->setLayout(Grid);
+
+	//让最大化按钮灰显
+	this->setWindowFlags(this->windowFlags()&~Qt::WindowMaximizeButtonHint);
 
 	//实现连接函数
-	connect(button_0, SIGNAL(bool), this, SLOT(button_0_clicked()));
-	connect(button_1, SIGNAL(bool), this, SLOT(button_1_clicked()));
-	connect(button_2, SIGNAL(bool), this, SLOT(button_2_clicked()));
-	connect(button_3, SIGNAL(bool), this, SLOT(button_3_clicked()));
-	connect(button_4, SIGNAL(bool), this, SLOT(button_4_clicked()));
-	connect(button_5, SIGNAL(bool), this, SLOT(button_5_clicked()));
-	connect(button_6, SIGNAL(bool), this, SLOT(button_6_clicked()));
-	connect(button_7, SIGNAL(bool), this, SLOT(button_7_clicked()));
-	connect(button_8, SIGNAL(bool), this, SLOT(button_8_clicked()));
-	connect(button_9, SIGNAL(bool), this, SLOT(button_9_clicked()));
-	connect(button_plus, SIGNAL(bool), this, SLOT(button_plus_clicked()));
-	connect(button_minus, SIGNAL(bool), this, SLOT(button_minus_clicked()));
-	connect(button_multiply, SIGNAL(bool), this, SLOT(button_multiply_clicked()));
-	connect(button_devide, SIGNAL(bool), this, SLOT(button_devide_clicked()));
-	connect(button_equal, SIGNAL(bool), this, SLOT(button_equal_clicked()));
-	connect(button_clear, SIGNAL(bool), this, SLOT(button_clear_clicked()));
-	connect(button_clearAll, SIGNAL(bool), this, SLOT(button_clearAll_clicked()));
-	connect(button_square, SIGNAL(bool), this, SLOT(button_square_clicked()));
-	connect(button_cube, SIGNAL(bool), this, SLOT(button_cube_clicked()));
-	connect(button_sq_root, SIGNAL(bool), this, SLOT(button_sq_root_clicked()));
-	connect(button_reciprocal, SIGNAL(bool), this, SLOT(button_reciprocal_clicked()));
-	connect(button_x_Y, SIGNAL(bool), this, SLOT(button_x_Y_clicked()));
-	connect(button_10_X, SIGNAL(bool), this, SLOT(button_10_X_clicked()));
-	connect(button_Exp, SIGNAL(bool), this, SLOT(button_Exp_clicked()));
-	connect(button_lg, SIGNAL(bool), this, SLOT(button_lg_clicked()));
-	connect(button_ln, SIGNAL(bool), this, SLOT(button_ln_clicked()));
-	connect(button_sin, SIGNAL(bool), this, SLOT(button_sin_clicked()));
-	connect(button_cos, SIGNAL(bool), this, SLOT(button_cos_clicked()));
-	connect(button_tan, SIGNAL(bool), this, SLOT(button_tan_clicked()));
-	connect(button_opp, SIGNAL(bool), this, SLOT(button_opp_clicked()));
-	connect(button_00, SIGNAL(bool), this, SLOT(button_00_clicked()));
-	connect(button_decpoint, SIGNAL(bool), this, SLOT(button_decpoint_clicked()));
-	connect(button_Mod, SIGNAL(bool), this, SLOT(button_Mod_clicked()));
-	connect(button_Lsh, SIGNAL(bool), this, SLOT(button_Lsh_clicked()));
-	connect(button_Rsh, SIGNAL(bool), this, SLOT(button_Rsh_clicked()));
-	connect(button_RoL, SIGNAL(bool), this, SLOT(button_RoL_clicked()));
-	connect(button_RoR, SIGNAL(bool), this, SLOT(button_RoR_clicked()));
-	connect(button_Or, SIGNAL(bool), this, SLOT(button_Or_clicked()));
-	connect(button_Xor, SIGNAL(bool), this, SLOT(button_Xor_clicked()));
-	connect(button_Not, SIGNAL(bool), this, SLOT(button_Not_clicked()));
-	connect(button_And, SIGNAL(bool), this, SLOT(button_And_clicked()));
-	connect(button_backspace, SIGNAL(bool), this, SLOT(button_backspace_clicked()));
-	connect(button_factorial, SIGNAL(bool), this, SLOT(button_factorial_clicked()));
-	connect(button_left, SIGNAL(bool), this, SLOT(button_left_clicked()));
-	connect(button_right, SIGNAL(bool), this, SLOT(button_right_clicked()));
+	connect(button_0, SIGNAL(clicked(bool)), this, SLOT(button_0_clicked()));
+	connect(button_1, SIGNAL(clicked(bool)), this, SLOT(button_1_clicked()));
+	connect(button_2, SIGNAL(clicked(bool)), this, SLOT(button_2_clicked()));
+	connect(button_3, SIGNAL(clicked(bool)), this, SLOT(button_3_clicked()));
+	connect(button_4, SIGNAL(clicked(bool)), this, SLOT(button_4_clicked()));
+	connect(button_5, SIGNAL(clicked(bool)), this, SLOT(button_5_clicked()));
+	connect(button_6, SIGNAL(clicked(bool)), this, SLOT(button_6_clicked()));
+	connect(button_7, SIGNAL(clicked(bool)), this, SLOT(button_7_clicked()));
+	connect(button_8, SIGNAL(clicked(bool)), this, SLOT(button_8_clicked()));
+	connect(button_9, SIGNAL(clicked(bool)), this, SLOT(button_9_clicked()));
+	connect(button_plus, SIGNAL(clicked(bool)), this, SLOT(button_plus_clicked()));
+	connect(button_minus, SIGNAL(clicked(bool)), this, SLOT(button_minus_clicked()));
+	connect(button_multiply, SIGNAL(clicked(bool)), this, SLOT(button_multiply_clicked()));
+	connect(button_devide, SIGNAL(clicked(bool)), this, SLOT(button_devide_clicked()));
+	connect(button_equal, SIGNAL(clicked(bool)), this, SLOT(button_equal_clicked()));
+	connect(button_clear, SIGNAL(clicked(bool)), this, SLOT(button_clear_clicked()));
+	connect(button_clearAll, SIGNAL(clicked(bool)), this, SLOT(button_clearAll_clicked()));
+	connect(button_square, SIGNAL(clicked(bool)), this, SLOT(button_square_clicked()));
+	connect(button_cube, SIGNAL(clicked(bool)), this, SLOT(button_cube_clicked()));
+	connect(button_sq_root, SIGNAL(clicked(bool)), this, SLOT(button_sq_root_clicked()));
+	connect(button_reciprocal, SIGNAL(clicked(bool)), this, SLOT(button_reciprocal_clicked()));
+	connect(button_x_Y, SIGNAL(clicked(bool)), this, SLOT(button_x_Y_clicked()));
+	connect(button_10_X, SIGNAL(clicked(bool)), this, SLOT(button_10_X_clicked()));
+	connect(button_Exp, SIGNAL(clicked(bool)), this, SLOT(button_Exp_clicked()));
+	connect(button_lg, SIGNAL(clicked(bool)), this, SLOT(button_lg_clicked()));
+	connect(button_ln, SIGNAL(clicked(bool)), this, SLOT(button_ln_clicked()));
+	connect(button_sin, SIGNAL(clicked(bool)), this, SLOT(button_sin_clicked()));
+	connect(button_cos, SIGNAL(clicked(bool)), this, SLOT(button_cos_clicked()));
+	connect(button_tan, SIGNAL(clicked(bool)), this, SLOT(button_tan_clicked()));
+	connect(button_opp, SIGNAL(clicked(bool)), this, SLOT(button_opp_clicked()));
+	connect(button_00, SIGNAL(clicked(bool)), this, SLOT(button_00_clicked()));
+	connect(button_decpoint, SIGNAL(clicked(bool)), this, SLOT(button_decpoint_clicked()));
+	connect(button_Mod, SIGNAL(clicked(bool)), this, SLOT(button_Mod_clicked()));
+	connect(button_Lsh, SIGNAL(clicked(bool)), this, SLOT(button_Lsh_clicked()));
+	connect(button_Rsh, SIGNAL(clicked(bool)), this, SLOT(button_Rsh_clicked()));
+	connect(button_RoL, SIGNAL(clicked(bool)), this, SLOT(button_RoL_clicked()));
+	connect(button_RoR, SIGNAL(clicked(bool)), this, SLOT(button_RoR_clicked()));
+	connect(button_Or, SIGNAL(clicked(bool)), this, SLOT(button_Or_clicked()));
+	connect(button_Xor, SIGNAL(clicked(bool)), this, SLOT(button_Xor_clicked()));
+	connect(button_Not, SIGNAL(clicked(bool)), this, SLOT(button_Not_clicked()));
+	connect(button_And, SIGNAL(clicked(bool)), this, SLOT(button_And_clicked()));
+	connect(button_backspace, SIGNAL(clicked(bool)), this, SLOT(button_backspace_clicked()));
+	connect(button_factorial, SIGNAL(clicked(bool)), this, SLOT(button_factorial_clicked()));
+	connect(button_left, SIGNAL(clicked(bool)), this, SLOT(button_left_clicked()));
+	connect(button_right, SIGNAL(clicked(bool)), this, SLOT(button_right_clicked()));
+}
+
+void Calculator::button_0_clicked()
+{
+	if (decp)//有小数点
+	{
+		output += "0";
+
+		current_Num += 0 * pow(10, -decp_counter);
+
+		decp_counter++;//小数点位数增加
+	}
+	else//无小数点
+	{
+		if (current_Num == 0)
+		{
+			output = "0";
+		}
+		else
+		{
+			output += "0";
+		}
+		current_Num *= 10;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void Calculator::button_1_clicked()
+{
+	if (decp)
+	{
+		output += "1";
+
+		current_Num += 1 * pow(10, -decp_counter);
+
+		decp_counter++;
+	}
+	else
+	{
+		if (current_Num == 0)
+		{
+			output = "1";
+		}
+		else
+		{
+			output += "1";
+		}
+		current_Num *= 10 + 1;
+	}
+	lineEdit->setText(output);
+	mark_occupy = false;
+}
+
+void Calculator::button_plus_clicked()
+{
+	//按下运算符后，立马进行运算
+	if (mark_occupy)//如果正在连续输入运算符
+	{
+		sign = '+';
+		return;
+	}
+	if (mark)//之前有运算符未处理
+	{
+		switch (sign)//处理之前的运算
+		{
+		case '+':
+			saved_Num += current_Num;
+			current_Num = 0;
+			break;
+		case '-':
+			saved_Num -= current_Num;
+			current_Num = 0;
+			break;
+		default:
+			break;
+		}
+		mark = true;//需要输入等于号才能为false
+		sign = '+';
+	}
+	else//之前没有运算符未处理
+	{
+		saved_Num = current_Num;
+		current_Num = 0;
+
+		mark = true;
+		sign = '+';
+	}
+	output = QString::fromStdString(std::to_string(saved_Num));
+	lineEdit->setText(output);
+	mark_occupy = true;
+}
+
+void Calculator::button_minus_clicked()
+{
+	//按下运算符后，立马进行运算
+	if (mark_occupy)//如果正在连续输入运算符
+	{
+		sign = '-';
+		return;
+	}
+	if (mark)//之前有运算符未处理
+	{
+		switch (sign)//处理之前的运算
+		{
+		case '+':
+			saved_Num += current_Num;
+			current_Num = 0;
+			break;
+		case '-':
+			saved_Num -= current_Num;
+			current_Num = 0;
+			break;
+		default:
+			break;
+		}
+		mark = true;//需要输入等于号才能为false
+		sign = '+';
+	}
+	else//之前没有运算符未处理
+	{
+		saved_Num = current_Num;
+		current_Num = 0;
+
+		mark = true;
+		sign = '-';
+	}
+	output = QString::fromStdString(std::to_string(saved_Num));
+	lineEdit->setText(output);
+	mark_occupy = true;
+}
+
+void Calculator::button_equal_clicked()
+{
+	switch (sign)
+	{
+	case '+':
+		answer = current_Num + saved_Num;
+		break;
+	case '-':
+		answer = current_Num - saved_Num;
+		break;
+	default:
+		break;
+	}
+	saved_Num = 0;
+	current_Num = answer;
+
+	output = QString::fromStdString(std::to_string(answer));
+	lineEdit->setText(output);
+	mark_occupy = false;
+	mark = false;
 }

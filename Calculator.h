@@ -7,7 +7,10 @@
 #include <QLineEdit>
 #include <QString>
 #include <QGridLayout>
-#include <QPoint>
+#include <QWidget>
+//#include <QPoint>
+
+
 
 class Calculator : public QWidget
 {
@@ -67,6 +70,8 @@ protected:
 	//输出文本框
 	QLineEdit* lineEdit;
 
+//signals:
+//private slots:
 	//处理按钮点击信号的槽函数
 	void button_0_clicked();
 	void button_1_clicked();
@@ -113,8 +118,22 @@ protected:
 	void button_factorial_clicked();
 	void button_left_clicked();
 	void button_right_clicked();
+
 private:
-	Ui::CalculatorClass ui;
+	//Ui::CalculatorClass ui;
 
 	//数据成员
+	double current_Num;//当前数字
+	double saved_Num;//存储数字
+	double answer;
+	QString output;
+	char sign;//运算符类型
+
+	bool mark;//是否有运算符未处理
+	bool mark_occupy;//处理连续输入运算符
+
+	bool decp;//是否小数点
+	int decp_counter;//记录小数点后几位
+
+	bool Error;//是否违反计算器规则
 };
