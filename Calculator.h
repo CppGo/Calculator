@@ -1,13 +1,12 @@
 #pragma once
 
-#include <QtWidgets/QMainWindow>
+#include <QWidget>
 #include "ui_Calculator.h"
 
 #include <QPushButton>
 #include <QLineEdit>
 #include <QString>
 #include <QGridLayout>
-#include <QPoint>
 
 class Calculator : public QWidget
 {
@@ -15,7 +14,21 @@ class Calculator : public QWidget
 
 public:
 	Calculator(QWidget *parent = Q_NULLPTR);
+	~Calculator();
 protected:
+	//处理double转std::string的精度函数
+	std::string Delete_zeros(std::string);
+
+	//处理up文本输入框的算式
+	double Solve(QString);
+
+	//ERROR
+	void ERROR(int = 0);
+
+	//让除了CE和C的其他按钮灰显
+	void Buttons_Disabled();
+	//复原
+	void Buttons_Enabled();
 
 	//按钮
 	QPushButton* button_0;
@@ -63,10 +76,11 @@ protected:
 	QPushButton* button_factorial;	//	n!
 	QPushButton* button_left;		//	(
 	QPushButton* button_right;		//	)
-
-	//输出文本框
-	QLineEdit* lineEdit;
-
+								
+	QLineEdit* up;			//上方输出文本框
+	QLineEdit* down;		//下方输出文本框
+signals:
+private slots:
 	//处理按钮点击信号的槽函数
 	void button_0_clicked();
 	void button_1_clicked();
@@ -85,36 +99,50 @@ protected:
 	void button_equal_clicked();
 	void button_clear_clicked();
 	void button_clearAll_clicked();
-	void button_square_clicked();
-	void button_cube_clicked();
-	void button_sq_root_clicked();
-	void button_reciprocal_clicked();
-	void button_x_Y_clicked();
-	void button_10_X_clicked();
-	void button_Exp_clicked();
-	void button_lg_clicked();
-	void button_ln_clicked();
-	void button_sin_clicked();
-	void button_cos_clicked();
-	void button_tan_clicked();
+	//void button_square_clicked();
+	//void button_cube_clicked();
+	//void button_sq_root_clicked();
+	//void button_reciprocal_clicked();
+	//void button_x_Y_clicked();
+	//void button_10_X_clicked();
+	//void button_Exp_clicked();
+	//void button_lg_clicked();
+	//void button_ln_clicked();
+	//void button_sin_clicked();
+	//void button_cos_clicked();
+	//void button_tan_clicked();
 	void button_opp_clicked();
 	void button_00_clicked();
 	void button_decpoint_clicked();
-	void button_Mod_clicked();
-	void button_Lsh_clicked();
-	void button_Rsh_clicked();
-	void button_RoL_clicked();
-	void button_RoR_clicked();
-	void button_Or_clicked();
-	void button_Xor_clicked();
-	void button_Not_clicked();
-	void button_And_clicked();
+	//void button_Mod_clicked();
+	//void button_Lsh_clicked();
+	//void button_Rsh_clicked();
+	//void button_RoL_clicked();
+	//void button_RoR_clicked();
+	//void button_Or_clicked();
+	//void button_Xor_clicked();
+	//void button_Not_clicked();
+	//void button_And_clicked();
 	void button_backspace_clicked();
-	void button_factorial_clicked();
-	void button_left_clicked();
-	void button_right_clicked();
+	//void button_factorial_clicked();
+	//void button_left_clicked();
+	//void button_right_clicked();
+
 private:
-	Ui::CalculatorClass ui;
+	Ui::Calculator ui;
 
 	//数据成员
+	double current_Num;//当前数字
+	double answer;//显示数字
+	
+	QString output;		//down
+	QString to_solve;	//up
+
+	bool mark_occupy;//处理连续输入运算符
+
+	bool decp;//是否有小数点
+	int decp_counter;//记录小数点后几位
+	bool zeros;//处理0.000001的类似情况
+
+	bool Error;//是否违反计算器规则
 };
