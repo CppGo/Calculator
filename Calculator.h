@@ -88,13 +88,13 @@ protected:
 	QPushButton* button_arccos;		//	arccos
 	QPushButton* button_arctan;		//	arcsintan
 	QPushButton* button_e;		//	e
-								
+
 	QLineEdit* up;			//上方输出文本框
 	QLineEdit* down;		//下方输出文本框
 signals:
-private slots:
-	//处理按钮点击信号的槽函数
-	void button_0_clicked();
+	private slots :
+		//处理按钮点击信号的槽函数
+		void button_0_clicked();
 	void button_1_clicked();
 	void button_2_clicked();
 	void button_3_clicked();
@@ -136,12 +136,12 @@ private slots:
 	void button_e_clicked();
 
 private:
-	Ui::Calculator ui;
+	Ui::CalculatorClass ui;
 
 	//数据成员
 	double current_Num;//当前数字
 	double answer;//显示数字
-	
+
 	QString output;		//down
 	QString to_solve;	//up
 

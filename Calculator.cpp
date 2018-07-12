@@ -537,7 +537,7 @@ int Calculator::per_judge(string str)
 Calculator::Calculator(QWidget *parent)
 	: QWidget(parent)
 {
-	ui.setupUi(this);
+	//ui.setupUi(this);
 
 	//初始化数据成员
 	current_Num = 0;
@@ -775,7 +775,7 @@ double Calculator::Solve(QString str, int choice)
 {
 	if (choice == Method)
 		return Evaluation(Postfix_Expression(Split(str.toStdString())));
-	else if(choice == ZWSMethod)
+	else if (choice == ZWSMethod)
 		return stod(Delete_zeros((calculate(str.toStdString()))));
 	else
 		return 0;
@@ -804,7 +804,7 @@ void Calculator::Buttons_Disabled()
 	button_cube->setDisabled(true);
 	button_sq_root->setDisabled(true);
 	button_reciprocal->setDisabled(true);
-	button_x_Y->setDisabled(true);
+	button_e->setDisabled(true);
 	button_10_X->setDisabled(true);
 	button_Exp->setDisabled(true);
 	button_lg->setDisabled(true);
@@ -815,15 +815,10 @@ void Calculator::Buttons_Disabled()
 	button_opp->setDisabled(true);
 	button_00->setDisabled(true);
 	button_decpoint->setDisabled(true);
-	button_Mod->setDisabled(true);
-	button_Lsh->setDisabled(true);
-	button_Rsh->setDisabled(true);
-	button_RoL->setDisabled(true);
-	button_RoR->setDisabled(true);
-	button_Or->setDisabled(true);
-	button_Xor->setDisabled(true);
-	button_Not->setDisabled(true);
-	button_And->setDisabled(true);
+	button_PI->setDisabled(true);
+	button_arcsin->setDisabled(true);
+	button_arccos->setDisabled(true);
+	button_arctan->setDisabled(true);
 	button_backspace->setDisabled(true);
 	button_factorial->setDisabled(true);
 	button_left->setDisabled(true);
@@ -853,7 +848,7 @@ void Calculator::Buttons_Enabled()
 	button_cube->setEnabled(true);
 	button_sq_root->setEnabled(true);
 	button_reciprocal->setEnabled(true);
-	button_x_Y->setEnabled(true);
+	button_e->setEnabled(true);
 	button_10_X->setEnabled(true);
 	button_Exp->setEnabled(true);
 	button_lg->setEnabled(true);
@@ -864,15 +859,10 @@ void Calculator::Buttons_Enabled()
 	button_opp->setEnabled(true);
 	button_00->setEnabled(true);
 	button_decpoint->setEnabled(true);
-	button_Mod->setEnabled(true);
-	button_Lsh->setEnabled(true);
-	button_Rsh->setEnabled(true);
-	button_RoL->setEnabled(true);
-	button_RoR->setEnabled(true);
-	button_Or->setEnabled(true);
-	button_Xor->setEnabled(true);
-	button_Not->setEnabled(true);
-	button_And->setEnabled(true);
+	button_PI->setEnabled(true);
+	button_arcsin->setEnabled(true);
+	button_arccos->setEnabled(true);
+	button_arctan->setEnabled(true);
 	button_backspace->setEnabled(true);
 	button_factorial->setEnabled(true);
 	button_left->setEnabled(true);
@@ -1187,7 +1177,7 @@ void Calculator::button_plus_clicked()
 	//可能用不到的副本
 	QString temp = to_solve.left(to_solve.length() - 1);
 	//计算之前先进行判断
-	switch (per_judge(to_solve.left(to_solve.length()-1).toStdString()))
+	switch (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
 	{
 	case DevideByZero:
 		ERROR(DevideByZero);
@@ -1482,7 +1472,7 @@ void Calculator::button_backspace_clicked()
 		output = "0";
 		current_Num = 0;
 	}
-	else if(output[output.length()-1]=='.')
+	else if (output[output.length() - 1] == '.')
 	{
 		//如果退了小数点，则当前数字不是小数
 		output.chop(1);//从尾部截去一个字符
@@ -1507,27 +1497,66 @@ void Calculator::button_backspace_clicked()
 
 void Calculator::button_00_clicked()
 {
+	if (decp)//有小数点
+	{
+		output += "00";
 
+		current_Num += 0 * pow(10, -decp_counter)+0 * pow(10, -(++decp_counter));
+
+		decp_counter++;//小数点位数增加
+	}
+	else//无小数点
+	{
+		if (current_Num == 0)
+		{
+			output = "0";
+		}
+		else
+		{
+			output += "00";
+		}
+		current_Num = current_Num * 100;
+	}
+	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_opp_clicked()
 {
 	if (output[0] == '-')//如果是负数
 	{
-		current_Num = output.right(1).toDouble();//在output头删去负号
+		current_Num = output.remove(0,1).toDouble();//在output头删去负号
 	}
 	else//正数
 	{
 		current_Num = output.prepend("-").toDouble();//前拼接负号
 	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_cube_clicked()
 {
 	current_Num = pow(current_Num, 3);
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_sq_root_clicked()
@@ -1542,28 +1571,96 @@ void Calculator::button_sq_root_clicked()
 		current_Num = pow(current_Num, 0.5);
 		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_square_clicked()
 {
 	current_Num = pow(current_Num, 2);
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_sin_clicked()
 {
 	current_Num = sin(current_Num / 180 * PI);
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_cos_clicked()
 {
 	current_Num = cos(current_Num / 180 * PI);
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_tan_clicked()
@@ -1578,14 +1675,49 @@ void Calculator::button_tan_clicked()
 		current_Num = tan(current_Num / 180 * PI);
 		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_Exp_clicked()
 {
 	current_Num = exp(current_Num);
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
+
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_ln_clicked()
@@ -1600,7 +1732,24 @@ void Calculator::button_ln_clicked()
 		current_Num = log(current_Num);
 		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_lg_clicked()
@@ -1615,14 +1764,48 @@ void Calculator::button_lg_clicked()
 		current_Num = log10(current_Num);
 		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_10_X_clicked()
 {
 	current_Num = pow(10, current_Num);
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_reciprocal_clicked()
@@ -1637,7 +1820,24 @@ void Calculator::button_reciprocal_clicked()
 		current_Num = 1.0 / current_Num;
 		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_factorial_clicked()
@@ -1672,7 +1872,24 @@ void Calculator::button_factorial_clicked()
 		}
 		output = QString::fromStdString(Delete_zeros(std::to_string(total)));
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_e_clicked()
@@ -1680,6 +1897,9 @@ void Calculator::button_e_clicked()
 	current_Num = e;
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
+	decp = true;
+	decp_counter = 7;
+	mark_occupy = false;
 }
 
 void Calculator::button_PI_clicked()
@@ -1687,11 +1907,14 @@ void Calculator::button_PI_clicked()
 	current_Num = PI;
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
+	decp = true;
+	decp_counter = 7;
+	mark_occupy = false;
 }
 
 void Calculator::button_arcsin_clicked()
 {
-	if (current_Num <= -1 || current_Num >= 1)
+	if (current_Num < -1 || current_Num > 1)
 	{
 		ERROR(InvalidInput);
 		return;
@@ -1700,13 +1923,30 @@ void Calculator::button_arcsin_clicked()
 	{
 		current_Num = asin(current_Num) / PI * 180;
 		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-		down->setText(output);
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
+	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_arccos_clicked()
 {
-	if (current_Num <= -1 || current_Num >= 1)
+	if (current_Num < -1 || current_Num > 1)
 	{
 		ERROR(InvalidInput);
 		return;
@@ -1714,14 +1954,48 @@ void Calculator::button_arccos_clicked()
 	else
 	{
 		current_Num = acos(current_Num) / PI * 180;
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-		down->setText(output);
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));	
 	}
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
+	down->setText(output);
+	mark_occupy = false;
 }
 
 void Calculator::button_arctan_clicked()
 {
 	current_Num = atan(current_Num) / PI * 180;
 	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (current_Num == int(current_Num))
+	{
+		decp = false;
+		decp_counter = 1;
+	}
+	else
+	{
+		decp = true;
+		int i = 0;
+		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		{
+		}
+		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		if (len >= 6) decp_counter = 7;
+		else decp_counter = len + 1;
+	}
 	down->setText(output);
+	mark_occupy = false;
 }
