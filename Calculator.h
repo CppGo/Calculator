@@ -8,6 +8,10 @@
 #include <QString>
 #include <QGridLayout>
 
+#include <string>
+
+using std::string;
+
 class Calculator : public QWidget
 {
 	Q_OBJECT
@@ -20,7 +24,7 @@ protected:
 	std::string Delete_zeros(std::string);
 
 	//处理up文本输入框的算式
-	double Solve(QString);
+	double Solve(QString, int);
 
 	//ERROR
 	void ERROR(int = 0);
@@ -29,6 +33,9 @@ protected:
 	void Buttons_Disabled();
 	//复原
 	void Buttons_Enabled();
+
+	//判断函数
+	int per_judge(string);
 
 	//按钮
 	QPushButton* button_0;
@@ -76,6 +83,11 @@ protected:
 	QPushButton* button_factorial;	//	n!
 	QPushButton* button_left;		//	(
 	QPushButton* button_right;		//	)
+	QPushButton* button_PI;		//	PI
+	QPushButton* button_arcsin;		//	arcsin
+	QPushButton* button_arccos;		//	arccos
+	QPushButton* button_arctan;		//	arcsintan
+	QPushButton* button_e;		//	e
 								
 	QLineEdit* up;			//上方输出文本框
 	QLineEdit* down;		//下方输出文本框
@@ -99,34 +111,29 @@ private slots:
 	void button_equal_clicked();
 	void button_clear_clicked();
 	void button_clearAll_clicked();
-	//void button_square_clicked();
-	//void button_cube_clicked();
-	//void button_sq_root_clicked();
-	//void button_reciprocal_clicked();
-	//void button_x_Y_clicked();
-	//void button_10_X_clicked();
-	//void button_Exp_clicked();
-	//void button_lg_clicked();
-	//void button_ln_clicked();
-	//void button_sin_clicked();
-	//void button_cos_clicked();
-	//void button_tan_clicked();
+	void button_square_clicked();
+	void button_cube_clicked();
+	void button_sq_root_clicked();
+	void button_reciprocal_clicked();
+	void button_10_X_clicked();
+	void button_Exp_clicked();
+	void button_lg_clicked();
+	void button_ln_clicked();
+	void button_sin_clicked();
+	void button_cos_clicked();
+	void button_tan_clicked();
 	void button_opp_clicked();
 	void button_00_clicked();
 	void button_decpoint_clicked();
-	//void button_Mod_clicked();
-	//void button_Lsh_clicked();
-	//void button_Rsh_clicked();
-	//void button_RoL_clicked();
-	//void button_RoR_clicked();
-	//void button_Or_clicked();
-	//void button_Xor_clicked();
-	//void button_Not_clicked();
-	//void button_And_clicked();
 	void button_backspace_clicked();
-	//void button_factorial_clicked();
+	void button_factorial_clicked();
 	//void button_left_clicked();
 	//void button_right_clicked();
+	void button_arcsin_clicked();
+	void button_arccos_clicked();
+	void button_arctan_clicked();
+	void button_PI_clicked();
+	void button_e_clicked();
 
 private:
 	Ui::Calculator ui;

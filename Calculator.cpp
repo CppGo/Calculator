@@ -3,7 +3,6 @@
 #include <iostream>
 //#include <vector>
 #include <QVector>
-#include <string>
 //#include <stack>
 #include <QStack>
 #include <regex>
@@ -12,42 +11,20 @@
 #include <queue>
 
 #define PI 3.14159265 
+#define e 2.71828182845
+
+#define DevideByZero 0			//除以零
+#define InvalidInput 1			//非法输入
+#define BracketsWrong 2			//括号顺序错误
+#define Brackets 3				//有括号算式
+#define NoBrackets 4			//无括号算式
+#define NeedBrackets 5			//需要补充括号
+#define Method 6				//有括号方法
+#define ZWSMethod 7				//无括号方法
+
+static int Brackets_counter;		//左括号-右括号计数器
 
 using namespace std;
-
-void Calculator::ERROR(int condition)
-{
-
-}
-
-int per_judge(string str)
-{
-	for (int i = 0; i < str.length(); i++)
-	{
-		if (str[i] == '(' || str[i] == ')')
-		{
-			int left = 0;
-			int right = 0;
-			for (int i = 0; i < str.length(); i++)
-			{
-				if (str[i] == '(')
-					left++;
-				else if (str[i] == ')')
-					right++;
-				if (right > left)
-					return 0; //error(右括号在做括号前面）
-			}
-			if (right != left)
-				return 0; //error 左右括号个数不一致
-			if (std::to_string(Evaluation(Postfix_Expression(Split(str)))) == "inf")
-				return 4;//除以零
-			return 1;  // 没有error 有括号  用它的方法
-		}
-	}
-	if (calculate(str) == "inf")
-		return 3;//没有error 没括号 除以零
-	return 2;// 没有error 没括号   用我的方法
-}
 
 vector<string> Split(string str) {
 	vector<string> temp_VecStr;
@@ -501,6 +478,62 @@ string calculate(string str)
 	return std::to_string(operator_QStack.top().number);
 }
 
+void Calculator::ERROR(int condition)
+{
+	switch (condition)
+	{
+	case DevideByZero:
+		output = "Cannot divede by zero";
+		down->setText(output);
+		break;
+	case InvalidInput:
+		output = "Invalid input";
+		down->setText(output);
+		break;
+	case BracketsWrong:
+		output = "Brackets Wrong";
+		down->setText(output);
+		break;
+	default:
+		output = "Default Error";
+		down->setText(output);
+		break;
+	}
+	Buttons_Disabled();
+}
+
+int Calculator::per_judge(string str)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (str[i] == '(' || str[i] == ')')
+		{
+			int left = 0;
+			int right = 0;
+			for (int i = 0; i < str.length(); i++)
+			{
+				if (str[i] == '(')
+					left++;
+				else if (str[i] == ')')
+					right++;
+				if (right > left)
+					return BracketsWrong; //error(右括号在左括号前面）
+			}
+			if (right < left)
+			{
+				Brackets_counter = left - right;
+				return NeedBrackets;//补充右括号
+			}
+			if (std::to_string(Evaluation(Postfix_Expression(Split(str)))) == "inf")
+				return DevideByZero;//除以零
+			return Brackets;  // 没有error 有括号  用它的方法
+		}
+	}
+	if (calculate(str) == "inf")
+		return DevideByZero;//除以零
+	return NoBrackets;// 没有error 没括号   用我的方法
+}
+
 Calculator::Calculator(QWidget *parent)
 	: QWidget(parent)
 {
@@ -520,7 +553,7 @@ Calculator::Calculator(QWidget *parent)
 	zeros = false;
 
 	Error = false;
-	
+
 	//初始化部件对象指针
 	button_0 = new QPushButton("0");
 	button_1 = new QPushButton("1");
@@ -543,7 +576,7 @@ Calculator::Calculator(QWidget *parent)
 	button_cube = new QPushButton("x^3");
 	button_sq_root = new QPushButton("sqr");
 	button_reciprocal = new QPushButton("1/x");
-	button_x_Y = new QPushButton("x^y");
+	button_e = new QPushButton("e");
 	button_10_X = new QPushButton("10^x");
 	button_Exp = new QPushButton("Exp");
 	button_lg = new QPushButton("lg");
@@ -554,19 +587,15 @@ Calculator::Calculator(QWidget *parent)
 	button_opp = new QPushButton("+/-");
 	button_00 = new QPushButton("00");
 	button_decpoint = new QPushButton(".");
-	button_Mod = new QPushButton("Mod");
-	button_Lsh = new QPushButton("Lsh");
-	button_Rsh = new QPushButton("Rsh");
-	button_RoL = new QPushButton("RoL");
-	button_RoR = new QPushButton("RoR");
-	button_Or = new QPushButton("Or");
-	button_Xor = new QPushButton("Xor");
-	button_Not = new QPushButton("Not");
-	button_And = new QPushButton("And");
+	button_PI = new QPushButton("PI");
+	button_arcsin = new QPushButton("sin^-1");
+	button_arccos = new QPushButton("cos^-1");
+	button_arctan = new QPushButton("tan^-1");
 	button_backspace = new QPushButton("<-");
 	button_factorial = new QPushButton("n!");
 	button_left = new QPushButton("(");
 	button_right = new QPushButton(")");
+
 
 	up = new QLineEdit;
 	down = new QLineEdit("0");
@@ -581,8 +610,8 @@ Calculator::Calculator(QWidget *parent)
 	up->setAlignment(Qt::AlignRight);
 	down->setAlignment(Qt::AlignRight);
 	//设置固定大小
-	up->setFixedSize(800, 35);
-	down->setFixedSize(800, 35);
+	up->setFixedSize(700, 35);
+	down->setFixedSize(700, 35);
 
 	button_0->setFixedSize(80, 80);
 	button_1->setFixedSize(80, 80);
@@ -605,7 +634,7 @@ Calculator::Calculator(QWidget *parent)
 	button_cube->setFixedSize(80, 80);
 	button_sq_root->setFixedSize(80, 80);
 	button_reciprocal->setFixedSize(80, 80);
-	button_x_Y->setFixedSize(80, 80);
+	button_e->setFixedSize(80, 80);
 	button_10_X->setFixedSize(80, 80);
 	button_Exp->setFixedSize(80, 80);
 	button_lg->setFixedSize(80, 80);
@@ -616,15 +645,10 @@ Calculator::Calculator(QWidget *parent)
 	button_opp->setFixedSize(80, 80);
 	button_00->setFixedSize(80, 80);
 	button_decpoint->setFixedSize(80, 80);
-	button_Mod->setFixedSize(80, 80);
-	button_Lsh->setFixedSize(80, 80);
-	button_Rsh->setFixedSize(80, 80);
-	button_RoL->setFixedSize(80, 80);
-	button_RoR->setFixedSize(80, 80);
-	button_Or->setFixedSize(80, 80);
-	button_Xor->setFixedSize(80, 80);
-	button_Not->setFixedSize(80, 80);
-	button_And->setFixedSize(80, 80);
+	button_PI->setFixedSize(80, 80);
+	button_arcsin->setFixedSize(80, 80);
+	button_arccos->setFixedSize(80, 80);
+	button_arctan->setFixedSize(80, 80);
 	button_backspace->setFixedSize(80, 80);
 	button_factorial->setFixedSize(80, 80);
 	button_left->setFixedSize(80, 80);
@@ -637,50 +661,45 @@ Calculator::Calculator(QWidget *parent)
 	//六个参数的含义
 	//部件指针, 所在行, 所在列, 占用行数, 占用列数, 对齐方式
 	Grid->addWidget(button_square, 3, 1, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_x_Y, 3, 2, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_sin, 3, 3, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_cos, 3, 4, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_tan, 3, 5, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_clearAll, 3, 6, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_clear, 3, 7, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_backspace, 3, 8, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_devide, 3, 9, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_e, 7, 3, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_sin, 3, 2, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_cos, 3, 3, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_tan, 3, 4, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_clearAll, 3, 5, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_clear, 3, 6, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_backspace, 3, 7, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_devide, 3, 8, 1, 1, Qt::Alignment());
 	Grid->addWidget(button_cube, 4, 1, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_10_X, 4, 2, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_lg, 4, 3, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_ln, 4, 4, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_opp, 4, 5, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_7, 4, 6, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_8, 4, 7, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_9, 4, 8, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_multiply, 4, 9, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_10_X, 6, 2, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_lg, 5, 2, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_ln, 5, 3, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_opp, 5, 4, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_7, 4, 5, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_8, 4, 6, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_9, 4, 7, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_multiply, 4, 8, 1, 1, Qt::Alignment());
 	Grid->addWidget(button_sq_root, 5, 1, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Exp, 5, 2, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Mod, 5, 3, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Xor, 5, 4, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Or, 5, 5, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_4, 5, 6, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_5, 5, 7, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_6, 5, 8, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_minus, 5, 9, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_reciprocal, 6, 1, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_factorial, 6, 2, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_Exp, 6, 1, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_PI, 7, 4, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_4, 5, 5, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_5, 5, 6, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_6, 5, 7, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_minus, 5, 8, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_reciprocal, 7, 1, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_factorial, 7, 2, 1, 1, Qt::Alignment());
 	Grid->addWidget(button_left, 6, 3, 1, 1, Qt::Alignment());
 	Grid->addWidget(button_right, 6, 4, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_And, 6, 5, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_1, 6, 6, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_2, 6, 7, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_3, 6, 8, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_plus, 6, 9, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Lsh, 7, 1, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Rsh, 7, 2, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_RoL, 7, 3, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_RoR, 7, 4, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_Not, 7, 5, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_0, 7, 6, Qt::Alignment());
-	Grid->addWidget(button_00, 7, 7, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_decpoint, 7, 8, 1, 1, Qt::Alignment());
-	Grid->addWidget(button_equal, 7, 9, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_1, 6, 5, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_2, 6, 6, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_3, 6, 7, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_plus, 6, 8, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_arcsin, 4, 2, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_arccos, 4, 3, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_arctan, 4, 4, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_0, 7, 5, Qt::Alignment());
+	Grid->addWidget(button_00, 7, 6, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_decpoint, 7, 7, 1, 1, Qt::Alignment());
+	Grid->addWidget(button_equal, 7, 8, 1, 1, Qt::Alignment());
 
 	//把Grid布局设置给当前创建的对象
 	this->setLayout(Grid);
@@ -710,7 +729,7 @@ Calculator::Calculator(QWidget *parent)
 	connect(button_cube, SIGNAL(clicked(bool)), this, SLOT(button_cube_clicked()));
 	connect(button_sq_root, SIGNAL(clicked(bool)), this, SLOT(button_sq_root_clicked()));
 	connect(button_reciprocal, SIGNAL(clicked(bool)), this, SLOT(button_reciprocal_clicked()));
-	connect(button_x_Y, SIGNAL(clicked(bool)), this, SLOT(button_x_Y_clicked()));
+	connect(button_e, SIGNAL(clicked(bool)), this, SLOT(button_e_clicked()));
 	connect(button_10_X, SIGNAL(clicked(bool)), this, SLOT(button_10_X_clicked()));
 	connect(button_Exp, SIGNAL(clicked(bool)), this, SLOT(button_Exp_clicked()));
 	connect(button_lg, SIGNAL(clicked(bool)), this, SLOT(button_lg_clicked()));
@@ -721,15 +740,10 @@ Calculator::Calculator(QWidget *parent)
 	connect(button_opp, SIGNAL(clicked(bool)), this, SLOT(button_opp_clicked()));
 	connect(button_00, SIGNAL(clicked(bool)), this, SLOT(button_00_clicked()));
 	connect(button_decpoint, SIGNAL(clicked(bool)), this, SLOT(button_decpoint_clicked()));
-	connect(button_Mod, SIGNAL(clicked(bool)), this, SLOT(button_Mod_clicked()));
-	connect(button_Lsh, SIGNAL(clicked(bool)), this, SLOT(button_Lsh_clicked()));
-	connect(button_Rsh, SIGNAL(clicked(bool)), this, SLOT(button_Rsh_clicked()));
-	connect(button_RoL, SIGNAL(clicked(bool)), this, SLOT(button_RoL_clicked()));
-	connect(button_RoR, SIGNAL(clicked(bool)), this, SLOT(button_RoR_clicked()));
-	connect(button_Or, SIGNAL(clicked(bool)), this, SLOT(button_Or_clicked()));
-	connect(button_Xor, SIGNAL(clicked(bool)), this, SLOT(button_Xor_clicked()));
-	connect(button_Not, SIGNAL(clicked(bool)), this, SLOT(button_Not_clicked()));
-	connect(button_And, SIGNAL(clicked(bool)), this, SLOT(button_And_clicked()));
+	connect(button_PI, SIGNAL(clicked(bool)), this, SLOT(button_PI_clicked()));
+	connect(button_arcsin, SIGNAL(clicked(bool)), this, SLOT(button_arcsin_clicked()));
+	connect(button_arccos, SIGNAL(clicked(bool)), this, SLOT(button_arccos_clicked()));
+	connect(button_arctan, SIGNAL(clicked(bool)), this, SLOT(button_arctan_clicked()));
 	connect(button_backspace, SIGNAL(clicked(bool)), this, SLOT(button_backspace_clicked()));
 	connect(button_factorial, SIGNAL(clicked(bool)), this, SLOT(button_factorial_clicked()));
 	connect(button_left, SIGNAL(clicked(bool)), this, SLOT(button_left_clicked()));
@@ -757,10 +771,14 @@ std::string Calculator::Delete_zeros(std::string str)
 	return str.substr(0, i);
 }
 
-double Calculator::Solve(QString str)
+double Calculator::Solve(QString str, int choice)
 {
-	return Evaluation(Postfix_Expression(Split(str.toStdString())));
-	//return 0;
+	if (choice == Method)
+		return Evaluation(Postfix_Expression(Split(str.toStdString())));
+	else if(choice == ZWSMethod)
+		return stod(Delete_zeros((calculate(str.toStdString()))));
+	else
+		return 0;
 }
 
 void Calculator::Buttons_Disabled()
@@ -1166,12 +1184,37 @@ void Calculator::button_plus_clicked()
 	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "+";
 	up->setText(to_solve);
-	//显示数字为上方算式暂时的答案
-	if (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
+	//可能用不到的副本
+	QString temp = to_solve.left(to_solve.length() - 1);
+	//计算之前先进行判断
+	switch (per_judge(to_solve.left(to_solve.length()-1).toStdString()))
 	{
-		answer = Solve(to_solve.left(to_solve.length() - 1));
+	case DevideByZero:
+		ERROR(DevideByZero);
+		return;
+		break;
+	case InvalidInput:
+		ERROR(InvalidInput);
+		return;
+		break;
+	case BracketsWrong:
+		ERROR(BracketsWrong);
+		return;
+		break;
+	case NeedBrackets:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		answer = Solve(temp, Method);
+		break;
+	case NoBrackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), ZWSMethod);
+		break;
+	case Brackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
 	}
-	
 	//当前数字归零
 	current_Num = 0;
 	//
@@ -1197,8 +1240,37 @@ void Calculator::button_minus_clicked()
 	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "-";
 	up->setText(to_solve);
-	//显示数字为上方算式暂时的答案
-	answer = Solve(to_solve.left(to_solve.length() - 1));
+	//可能用不到的副本
+	QString temp = to_solve.left(to_solve.length() - 1);
+	//计算之前先进行判断
+	switch (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
+	{
+	case DevideByZero:
+		ERROR(DevideByZero);
+		return;
+		break;
+	case InvalidInput:
+		ERROR(InvalidInput);
+		return;
+		break;
+	case BracketsWrong:
+		ERROR(BracketsWrong);
+		return;
+		break;
+	case NeedBrackets:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		answer = Solve(temp, Method);
+		break;
+	case NoBrackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), ZWSMethod);
+		break;
+	case Brackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
+	}
 	//当前数字归零
 	current_Num = 0;
 	//
@@ -1224,8 +1296,37 @@ void Calculator::button_multiply_clicked()
 	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "*";
 	up->setText(to_solve);
-	//显示数字为上方算式暂时的答案
-	answer = Solve(to_solve.left(to_solve.length() - 1));
+	//可能用不到的副本
+	QString temp = to_solve.left(to_solve.length() - 1);
+	//计算之前先进行判断
+	switch (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
+	{
+	case DevideByZero:
+		ERROR(DevideByZero);
+		return;
+		break;
+	case InvalidInput:
+		ERROR(InvalidInput);
+		return;
+		break;
+	case BracketsWrong:
+		ERROR(BracketsWrong);
+		return;
+		break;
+	case NeedBrackets:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		answer = Solve(temp, Method);
+		break;
+	case NoBrackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), ZWSMethod);
+		break;
+	case Brackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
+	}
 	//当前数字归零
 	current_Num = 0;
 	//
@@ -1251,8 +1352,37 @@ void Calculator::button_devide_clicked()
 	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "/";
 	up->setText(to_solve);
-	//显示数字为上方算式暂时的答案
-	answer = Solve(to_solve.left(to_solve.length() - 1));
+	//可能用不到的副本
+	QString temp = to_solve.left(to_solve.length() - 1);
+	//计算之前先进行判断
+	switch (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
+	{
+	case DevideByZero:
+		ERROR(DevideByZero);
+		return;
+		break;
+	case InvalidInput:
+		ERROR(InvalidInput);
+		return;
+		break;
+	case BracketsWrong:
+		ERROR(BracketsWrong);
+		return;
+		break;
+	case NeedBrackets:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		answer = Solve(temp, Method);
+		break;
+	case NoBrackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), ZWSMethod);
+		break;
+	case Brackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
+	}
 	//当前数字归零
 	current_Num = 0;
 	//
@@ -1271,8 +1401,37 @@ void Calculator::button_equal_clicked()
 	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "=";
 	up->setText(to_solve);
-	//下方输出结果
-	answer = Solve(to_solve.left(to_solve.length() - 1));
+	//可能用不到的副本
+	QString temp = to_solve.left(to_solve.length() - 1);
+	//计算之前先进行判断
+	switch (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
+	{
+	case DevideByZero:
+		ERROR(DevideByZero);
+		return;
+		break;
+	case InvalidInput:
+		ERROR(InvalidInput);
+		return;
+		break;
+	case BracketsWrong:
+		ERROR(BracketsWrong);
+		return;
+		break;
+	case NeedBrackets:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		answer = Solve(temp, Method);
+		break;
+	case NoBrackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), ZWSMethod);
+		break;
+	case Brackets:
+		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
+	}
 	output = QString::fromStdString(Delete_zeros(std::to_string(answer)));
 	down->setText(output);
 	//让所有按钮灰显
@@ -1361,5 +1520,208 @@ void Calculator::button_opp_clicked()
 	{
 		current_Num = output.prepend("-").toDouble();//前拼接负号
 	}
+	down->setText(output);
+}
+
+void Calculator::button_cube_clicked()
+{
+	current_Num = pow(current_Num, 3);
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_sq_root_clicked()
+{
+	if (current_Num < 0)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = pow(current_Num, 0.5);
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
+	down->setText(output);
+}
+
+void Calculator::button_square_clicked()
+{
+	current_Num = pow(current_Num, 2);
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_sin_clicked()
+{
+	current_Num = sin(current_Num / 180 * PI);
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_cos_clicked()
+{
+	current_Num = cos(current_Num / 180 * PI);
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_tan_clicked()
+{
+	if ((fmod(current_Num, 360) == 90) || (fmod(current_Num, 360) == 270))
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = tan(current_Num / 180 * PI);
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
+	down->setText(output);
+}
+
+void Calculator::button_Exp_clicked()
+{
+	current_Num = exp(current_Num);
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_ln_clicked()
+{
+	if (current_Num < 0)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = log(current_Num);
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
+	down->setText(output);
+}
+
+void Calculator::button_lg_clicked()
+{
+	if (current_Num < 0)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = log10(current_Num);
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
+	down->setText(output);
+}
+
+void Calculator::button_10_X_clicked()
+{
+	current_Num = pow(10, current_Num);
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_reciprocal_clicked()
+{
+	if (current_Num == 0)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = 1.0 / current_Num;
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
+	down->setText(output);
+}
+
+void Calculator::button_factorial_clicked()
+{
+	if (current_Num < 0)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else if (current_Num == 0)
+	{
+		output = QString::fromStdString(Delete_zeros(std::to_string(1)));
+	}
+	else
+	{
+		double total = 1;
+		double i = current_Num;
+		for (; i >= 1; i--)
+		{
+			if (i == current_Num)
+			{
+				total = current_Num;
+			}
+			else
+			{
+				total *= i;
+			}
+		}
+		if (i != 0)
+		{
+			total *= (i*tgamma(i));
+		}
+		output = QString::fromStdString(Delete_zeros(std::to_string(total)));
+	}
+	down->setText(output);
+}
+
+void Calculator::button_e_clicked()
+{
+	current_Num = e;
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_PI_clicked()
+{
+	current_Num = PI;
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	down->setText(output);
+}
+
+void Calculator::button_arcsin_clicked()
+{
+	if (current_Num <= -1 || current_Num >= 1)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = asin(current_Num) / PI * 180;
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+		down->setText(output);
+	}
+}
+
+void Calculator::button_arccos_clicked()
+{
+	if (current_Num <= -1 || current_Num >= 1)
+	{
+		ERROR(InvalidInput);
+		return;
+	}
+	else
+	{
+		current_Num = acos(current_Num) / PI * 180;
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+		down->setText(output);
+	}
+}
+
+void Calculator::button_arctan_clicked()
+{
+	current_Num = atan(current_Num) / PI * 180;
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 }
