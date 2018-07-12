@@ -1065,6 +1065,7 @@ void Calculator::button_clear_clicked()
 	{
 		to_solve = "";
 		up->setText(to_solve);
+		Error = false;
 	}
 }
 
@@ -1091,7 +1092,7 @@ void Calculator::button_backspace_clicked()
 	if (output.length() == 1)//长度为1就置零
 	{
 		output = "0";
-		current_Num /= 10;
+		current_Num = 0;
 	}
 	else if(output[output.length()-1]=='.')
 	{
@@ -1101,9 +1102,17 @@ void Calculator::button_backspace_clicked()
 		decp_counter = 1;
 		zeros = false;
 	}
-	else
+	else if (decp)//如果是小数
 	{
-		output.chop(1);//从尾部截去一个字符
+		double last = output[output.length() - 1].digitValue();
+		decp_counter--;
+		current_Num -= last * pow(10, -decp_counter);
+		output.chop(1);
+	}
+	else//如果是整数
+	{
+		output.chop(1);
+		current_Num /= 10;
 	}
 	down->setText(output);
 }
