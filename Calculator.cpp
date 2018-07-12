@@ -8,8 +8,46 @@
 #include <QStack>
 #include <regex>
 #include <cmath>
+#include <map>
+#include <queue>
+
+#define PI 3.14159265 
 
 using namespace std;
+
+void Calculator::ERROR(int condition)
+{
+
+}
+
+int per_judge(string str)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (str[i] == '(' || str[i] == ')')
+		{
+			int left = 0;
+			int right = 0;
+			for (int i = 0; i < str.length(); i++)
+			{
+				if (str[i] == '(')
+					left++;
+				else if (str[i] == ')')
+					right++;
+				if (right > left)
+					return 0; //error(右括号在做括号前面）
+			}
+			if (right != left)
+				return 0; //error 左右括号个数不一致
+			if (std::to_string(Evaluation(Postfix_Expression(Split(str)))) == "inf")
+				return 4;//除以零
+			return 1;  // 没有error 有括号  用它的方法
+		}
+	}
+	if (calculate(str) == "inf")
+		return 3;//没有error 没括号 除以零
+	return 2;// 没有error 没括号   用我的方法
+}
 
 vector<string> Split(string str) {
 	vector<string> temp_VecStr;
@@ -276,6 +314,193 @@ double Evaluation(QStack<string> temp_QStackExp) {
 	return temp_QStackNum.top();
 }
 
+string calculate(string str)
+{
+	struct node
+	{
+		double number;
+		char op;
+		bool flag;
+	};
+	QStack<node> operator_QStack; // 操作符栈
+	queue<node> last_expression_QStack;// 后缀表达式队列
+	map<char, int> calculate_map; //char-int类型map
+	double temp_num;
+	node temp_node;
+	calculate_map['+'] = calculate_map['-'] = 1;
+	calculate_map['*'] = calculate_map['/'] = 2;
+	calculate_map['('] = calculate_map[')'] = 3;
+	int index[10] = { -1,-1,-1,-1,-1,-1,-1,-1,-1,-1, }; int c = 0;
+	for (int i = 0; i < str.length(); i++)
+	{
+		if ((str[i] == '/' || str[i] == '*' || str[i] == '+' || str[i] == '-' || str[i] == '(') && str[i + 1] == '-')
+		{
+			index[c++] = i + 2;
+			str[i + 1] = ' ';
+		}
+		if (str[0] == '-')
+		{
+			index[c++] = 1;
+			str[0] = ' ';
+		}
+
+	}
+	/*for (int i = 0; i < 10; i++)
+	{
+	cout << index[i] << " ";
+	}
+	cout << endl;
+	for (int k = 0; k < str.length(); k++)
+	{
+	cout << str[k] << " ";
+	}
+	cout << endl;*/
+	for (int i = 0; i < str.length();)
+	{
+		/*if (str[i] == '(')
+		cout << 0.1 << endl;
+		if (str[i] == ')')
+		cout << 7 << endl;
+		if (str[i] == '*')
+		cout << 8 << endl;*/
+		////////////////////////////////////////////////////////////
+		if (str[i] == ' ')
+		{
+			i++;
+			continue;
+		}
+		else if (str[i] >= '0'&&str[i] <= '9')
+		{
+			int flag1 = 1;
+			for (int j = 0; j<10; j++)
+			{
+				if (i == index[j])
+				{
+					flag1 = -1; break;
+				}
+
+			}
+			int j;
+			for (j = i; str[j] != '/' &&str[j] != '*' &&str[j] != '+' && str[j] != '-'&&str[j] != ')'&&str[j] != '('&&j<str.length(); j++)
+			{
+
+			}
+			temp_node.flag = 1;
+
+			temp_node.number = (flag1)*stod(str.substr(i, j - i));
+			i = j;
+			last_expression_QStack.push(temp_node);
+		}
+		else
+		{
+			/*temp_node.flag = 0;
+			while (!operator_QStack.empty() && calculate_map[str[i]] <= calculate_map[operator_QStack.top().op])
+			{
+
+			last_expression_QStack.push(operator_QStack.top());
+			operator_QStack.pop();
+			}
+			temp_node.op = str[i];
+			operator_QStack.push(temp_node);
+			i++;*/
+			/////////////////////////////////////////////////////////////////////////////////////
+			//cout << 1 << endl;
+			if (str[i] == '(')
+			{
+				temp_node.flag = 0;
+				temp_node.op = str[i];
+				operator_QStack.push(temp_node);
+				i++;
+			}
+			else if (str[i] == ')')
+			{
+				while (!operator_QStack.empty())
+				{
+					if (operator_QStack.top().op != '(')
+					{
+						last_expression_QStack.push(operator_QStack.top());
+
+					}
+					operator_QStack.pop();
+
+				}
+
+				/*if (!operator_QStack.empty())
+				{
+				operator_QStack.pop(); cout << 666 << endl;
+				}*/
+
+				i++;
+			}
+			else
+			{
+
+				while (!operator_QStack.empty() && calculate_map[str[i]] <= calculate_map[operator_QStack.top().op])
+				{
+
+					last_expression_QStack.push(operator_QStack.top());
+					operator_QStack.pop();
+				}
+				temp_node.flag = 0;
+				temp_node.op = str[i];
+				operator_QStack.push(temp_node);
+				i++;
+			}
+
+		}
+	}
+
+	while (!operator_QStack.empty())
+	{
+		///cout << "222" << endl;
+		//cout << operator_QStack.top().op << endl;
+		last_expression_QStack.push(operator_QStack.top());
+		operator_QStack.pop();
+	}
+	//////////////////////////////////////////////////
+	/*while (!last_expression_QStack.empty())
+	{
+	cout << (last_expression_QStack.front().flag ? last_expression_QStack.front().number : (char)(last_expression_QStack.front().op)) << " ";
+	last_expression_QStack.pop();
+	}*/
+	///////////////////////////////////////////////
+	double temp1; double temp2;
+	node cur; node temp;
+	while (!last_expression_QStack.empty())
+	{
+
+		cur = last_expression_QStack.front();
+		last_expression_QStack.pop();
+		if (cur.flag == 1) operator_QStack.push(cur);
+		else
+		{
+
+			temp2 = operator_QStack.top().number;
+
+			operator_QStack.pop();
+
+			temp1 = operator_QStack.top().number;
+			operator_QStack.pop();
+
+			temp.flag = true;
+			if (cur.op == '+') temp.number = temp1 + temp2;
+			else if (cur.op == '-') temp.number = temp1 - temp2;
+			else if (cur.op == '*') temp.number = temp1 * temp2;
+			else if (cur.op == '/') {
+				if (temp2 == 0)
+					return "inf";
+				else
+					temp.number = temp1 / temp2;
+			}
+			//else cout << "fuck" << endl;
+			operator_QStack.push(temp);
+
+
+		}
+	}
+	return std::to_string(operator_QStack.top().number);
+}
+
 Calculator::Calculator(QWidget *parent)
 	: QWidget(parent)
 {
@@ -285,7 +510,7 @@ Calculator::Calculator(QWidget *parent)
 	current_Num = 0;
 	answer = 0;
 
-	output = "";
+	output = "0";//初始化为0
 	to_solve = "";
 
 	mark_occupy = false;
@@ -942,7 +1167,11 @@ void Calculator::button_plus_clicked()
 	to_solve += "+";
 	up->setText(to_solve);
 	//显示数字为上方算式暂时的答案
-	answer = Solve(to_solve.left(to_solve.length() - 1));
+	if (per_judge(to_solve.left(to_solve.length() - 1).toStdString()))
+	{
+		answer = Solve(to_solve.left(to_solve.length() - 1));
+	}
+	
 	//当前数字归零
 	current_Num = 0;
 	//
@@ -1087,7 +1316,7 @@ void Calculator::button_clearAll_clicked()
 
 void Calculator::button_backspace_clicked()
 {
-	if (output == "0")//显示为0就不用处理
+	if (output == "0" || !zeros && current_Num == 0)//显示为0就不用处理
 		return;
 	if (output.length() == 1)//长度为1就置零
 	{
@@ -1098,7 +1327,7 @@ void Calculator::button_backspace_clicked()
 	{
 		//如果退了小数点，则当前数字不是小数
 		output.chop(1);//从尾部截去一个字符
-		decp = 0;
+		decp = false;
 		decp_counter = 1;
 		zeros = false;
 	}
@@ -1112,7 +1341,7 @@ void Calculator::button_backspace_clicked()
 	else//如果是整数
 	{
 		output.chop(1);
-		current_Num /= 10;
+		current_Num = (int)current_Num / 10;
 	}
 	down->setText(output);
 }
@@ -1124,5 +1353,13 @@ void Calculator::button_00_clicked()
 
 void Calculator::button_opp_clicked()
 {
-	
+	if (output[0] == '-')//如果是负数
+	{
+		current_Num = output.right(1).toDouble();//在output头删去负号
+	}
+	else//正数
+	{
+		current_Num = output.prepend("-").toDouble();//前拼接负号
+	}
+	down->setText(output);
 }
