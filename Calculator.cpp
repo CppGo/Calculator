@@ -22,7 +22,8 @@
 #define Method 6				//有括号方法
 #define ZWSMethod 7				//无括号方法
 
-static int Brackets_counter;		//左括号-右括号计数器
+static int Brackets_counter = 0;		//左括号-右括号计数器
+static int Left_counter = 0;			//左括号计数器
 
 using namespace std;
 
@@ -508,6 +509,8 @@ int Calculator::per_judge(string str)
 	{
 		if (str[i] == '(' || str[i] == ')')
 		{
+			if (str.find("()") != -1)
+				return InvalidInput;//出现()会报错
 			int left = 0;
 			int right = 0;
 			for (int i = 0; i < str.length(); i++)
@@ -1170,8 +1173,15 @@ void Calculator::button_plus_clicked()
 		up->setText(to_solve);
 		return;
 	}
+	if (to_solve.length() > 1 && to_solve[to_solve.length() - 1] == ')')
+	{
+
+	}
+	else
+	{
+		to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
 	//将当前数字及符号压入上方算式
-	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "+";
 	up->setText(to_solve);
 	//可能用不到的副本
@@ -1226,8 +1236,15 @@ void Calculator::button_minus_clicked()
 		up->setText(to_solve);
 		return;
 	}
+	if (to_solve.length() > 1 && to_solve[to_solve.length() - 1] == ')')
+	{
+
+	}
+	else
+	{
+		to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
 	//将当前数字及符号压入上方算式
-	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "-";
 	up->setText(to_solve);
 	//可能用不到的副本
@@ -1282,8 +1299,15 @@ void Calculator::button_multiply_clicked()
 		up->setText(to_solve);
 		return;
 	}
+	if (to_solve.length() > 1 && to_solve[to_solve.length() - 1] == ')')
+	{
+
+	}
+	else
+	{
+		to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
 	//将当前数字及符号压入上方算式
-	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "*";
 	up->setText(to_solve);
 	//可能用不到的副本
@@ -1338,8 +1362,15 @@ void Calculator::button_devide_clicked()
 		up->setText(to_solve);
 		return;
 	}
+	if (to_solve.length() > 1 && to_solve[to_solve.length() - 1] == ')')
+	{
+
+	}
+	else
+	{
+		to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
 	//将当前数字及符号压入上方算式
-	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	to_solve += "/";
 	up->setText(to_solve);
 	//可能用不到的副本
@@ -1461,6 +1492,9 @@ void Calculator::button_clearAll_clicked()
 	//清空所有算式
 	to_solve = "";
 	up->setText(to_solve);
+	//清空左括号
+	Left_counter = 0;
+	button_left->setText("(");
 }
 
 void Calculator::button_backspace_clicked()
@@ -1501,7 +1535,7 @@ void Calculator::button_00_clicked()
 	{
 		output += "00";
 
-		current_Num += 0 * pow(10, -decp_counter)+0 * pow(10, -(++decp_counter));
+		current_Num += 0 * pow(10, -decp_counter) + 0 * pow(10, -(++decp_counter));
 
 		decp_counter++;//小数点位数增加
 	}
@@ -1525,7 +1559,7 @@ void Calculator::button_opp_clicked()
 {
 	if (output[0] == '-')//如果是负数
 	{
-		current_Num = output.remove(0,1).toDouble();//在output头删去负号
+		current_Num = output.remove(0, 1).toDouble();//在output头删去负号
 	}
 	else//正数
 	{
@@ -1871,6 +1905,7 @@ void Calculator::button_factorial_clicked()
 			total *= (i*tgamma(i));
 		}
 		output = QString::fromStdString(Delete_zeros(std::to_string(total)));
+		current_Num = total;
 	}
 	if (current_Num == int(current_Num))
 	{
@@ -1954,7 +1989,7 @@ void Calculator::button_arccos_clicked()
 	else
 	{
 		current_Num = acos(current_Num) / PI * 180;
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));	
+		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
 	if (current_Num == int(current_Num))
 	{
@@ -1998,4 +2033,94 @@ void Calculator::button_arctan_clicked()
 	}
 	down->setText(output);
 	mark_occupy = false;
+}
+
+void Calculator::button_left_clicked()
+{
+	if (to_solve.length() > 1 && to_solve[to_solve.length() - 1] == ')')
+	{
+
+	}
+	else
+	{
+		to_solve += '(';
+		Left_counter++;
+	}
+	//
+	QString temp;
+	if (Left_counter == 0)
+	{
+		temp = "(";
+	}
+	else
+	{
+		temp = "(" + QString::fromStdString(std::to_string(Left_counter));
+	}
+	button_left->setText(temp);
+	up->setText(to_solve);
+	//
+	mark_occupy = false;//这里改为false
+}
+
+void Calculator::button_right_clicked()
+{
+	if (Left_counter == 0)//没有左括号时不能按右括号
+		return;
+	//将当前数字压入上方算式然后再补充右括号
+	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	//加上右括号
+	to_solve += ')';
+	up->setText(to_solve);
+	Left_counter--;
+	QString temp;
+	if (Left_counter == 0)
+	{
+		temp = "(";
+	}
+	else
+	{
+		temp = "(" + QString::fromStdString(std::to_string(Left_counter));
+	}
+	button_left->setText(temp);
+	//可能用不到的副本
+	temp = to_solve;
+	//计算之前先进行判断
+	switch (per_judge(to_solve.toStdString()))
+	{
+	case DevideByZero:
+		ERROR(DevideByZero);
+		return;
+		break;
+	case InvalidInput:
+		ERROR(InvalidInput);
+		return;
+		break;
+	case BracketsWrong:
+		ERROR(BracketsWrong);
+		return;
+		break;
+	case NeedBrackets:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		answer = Solve(temp, Method);
+		break;
+	case NoBrackets:
+		answer = Solve(to_solve, ZWSMethod);
+		break;
+	case Brackets:
+		answer = Solve(to_solve, Method);
+		break;
+	}
+	//当前数字归零
+	current_Num = 0;
+	//
+	output = QString::fromStdString(Delete_zeros(std::to_string(answer)));
+	down->setText(output);
+	//
+	mark_occupy = false;//这里改为false
+	decp = false;
+	decp_counter = 1;
+	zeros = false;
 }
