@@ -377,7 +377,6 @@ string calculate(string str)
 			/*temp_node.flag = 0;
 			while (!operator_QStack.empty() && calculate_map[str[i]] <= calculate_map[operator_QStack.top().op])
 			{
-
 			last_expression_QStack.push(operator_QStack.top());
 			operator_QStack.pop();
 			}
@@ -1477,7 +1476,14 @@ void Calculator::button_devide_clicked()
 void Calculator::button_equal_clicked()
 {
 	//上方输出算式
-	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	if (to_solve.length() > 1 && to_solve[to_solve.length() - 1] == ')')
+	{
+
+	}
+	else
+	{
+		to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	}
 	to_solve += "=";
 	up->setText(to_solve);
 	//可能用不到的副本
@@ -2238,7 +2244,7 @@ void Calculator::Beautiful()
 		"QPushButton:hover{background-color:gray; color: black;}"
 		"QPushButton:pressed{background-color:silver;\
 		border - style: inset; }"
-	); 
+	);
 	button_6->setStyleSheet("QPushButton{background-color:white;\
 		color: black;   border - radius: 10px;  border: 2px groove gray; \
 		border - style: outset;}"
