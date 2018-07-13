@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_Calculator.h"
+//#include "ui_Calculator.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -36,6 +36,9 @@ protected:
 
 	//判断函数
 	int per_judge(string);
+
+	//画面美化
+	void Beautiful();
 
 	//按钮
 	QPushButton* button_0;
@@ -92,9 +95,9 @@ protected:
 	QLineEdit* up;			//上方输出文本框
 	QLineEdit* down;		//下方输出文本框
 signals:
-	private slots :
-		//处理按钮点击信号的槽函数
-		void button_0_clicked();
+private slots:
+	//处理按钮点击信号的槽函数
+	void button_0_clicked();
 	void button_1_clicked();
 	void button_2_clicked();
 	void button_3_clicked();
@@ -127,8 +130,8 @@ signals:
 	void button_decpoint_clicked();
 	void button_backspace_clicked();
 	void button_factorial_clicked();
-	//void button_left_clicked();
-	//void button_right_clicked();
+	void button_left_clicked();
+	void button_right_clicked();
 	void button_arcsin_clicked();
 	void button_arccos_clicked();
 	void button_arctan_clicked();
@@ -136,7 +139,7 @@ signals:
 	void button_e_clicked();
 
 private:
-	Ui::CalculatorClass ui;
+	//Ui::CalculatorClass ui;
 
 	//数据成员
 	double current_Num;//当前数字

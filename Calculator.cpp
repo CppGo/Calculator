@@ -22,6 +22,9 @@
 #define Method 6				//有括号方法
 #define ZWSMethod 7				//无括号方法
 
+#define ElseDeal 8				//其他方法
+#define NBandED 9				//5+8
+
 static int Brackets_counter = 0;		//左括号-右括号计数器
 static int Left_counter = 0;			//左括号计数器
 
@@ -525,10 +528,14 @@ int Calculator::per_judge(string str)
 			if (right < left)
 			{
 				Brackets_counter = left - right;
+				if (str[0] == '-')
+					return NBandED;
 				return NeedBrackets;//补充右括号
 			}
 			if (std::to_string(Evaluation(Postfix_Expression(Split(str)))) == "inf")
 				return DevideByZero;//除以零
+			if (str[0] == '-')
+				return ElseDeal;//既有括号第一个又是减号
 			return Brackets;  // 没有error 有括号  用它的方法
 		}
 	}
@@ -570,7 +577,7 @@ Calculator::Calculator(QWidget *parent)
 	button_9 = new QPushButton("9");
 	button_plus = new QPushButton("+");
 	button_minus = new QPushButton("-");
-	button_multiply = new QPushButton("*");
+	button_multiply = new QPushButton(QString::fromWCharArray(L"×"));
 	button_devide = new QPushButton("/");
 	button_equal = new QPushButton("=");
 	button_clear = new QPushButton("CE");
@@ -709,6 +716,9 @@ Calculator::Calculator(QWidget *parent)
 
 	//让最大化按钮灰显
 	this->setWindowFlags(this->windowFlags()&~Qt::WindowMaximizeButtonHint);
+
+	//画面美化
+	Beautiful();
 
 	//实现连接函数
 	connect(button_0, SIGNAL(clicked(bool)), this, SLOT(button_0_clicked()));
@@ -1214,6 +1224,18 @@ void Calculator::button_plus_clicked()
 	case Brackets:
 		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
 		break;
+	case ElseDeal:
+		temp.prepend("0");
+		answer = Solve(temp, Method);
+		break;
+	case NBandED:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		temp.prepend('0');
+		answer = Solve(temp, Method);
+		break;
 	}
 	//当前数字归零
 	current_Num = 0;
@@ -1276,6 +1298,18 @@ void Calculator::button_minus_clicked()
 		break;
 	case Brackets:
 		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
+	case ElseDeal:
+		temp.prepend("0");
+		answer = Solve(temp, Method);
+		break;
+	case NBandED:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		temp.prepend('0');
+		answer = Solve(temp, Method);
 		break;
 	}
 	//当前数字归零
@@ -1340,6 +1374,18 @@ void Calculator::button_multiply_clicked()
 	case Brackets:
 		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
 		break;
+	case ElseDeal:
+		temp.prepend("0");
+		answer = Solve(temp, Method);
+		break;
+	case NBandED:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		temp.prepend('0');
+		answer = Solve(temp, Method);
+		break;
 	}
 	//当前数字归零
 	current_Num = 0;
@@ -1403,6 +1449,18 @@ void Calculator::button_devide_clicked()
 	case Brackets:
 		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
 		break;
+	case ElseDeal:
+		temp.prepend("0");
+		answer = Solve(temp, Method);
+		break;
+	case NBandED:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		temp.prepend('0');
+		answer = Solve(temp, Method);
+		break;
 	}
 	//当前数字归零
 	current_Num = 0;
@@ -1451,6 +1509,18 @@ void Calculator::button_equal_clicked()
 		break;
 	case Brackets:
 		answer = Solve(to_solve.left(to_solve.length() - 1), Method);
+		break;
+	case ElseDeal:
+		temp.prepend('0');
+		answer = Solve(temp, Method);
+		break;
+	case NBandED:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		temp.prepend('0');
+		answer = Solve(temp, Method);
 		break;
 	}
 	output = QString::fromStdString(Delete_zeros(std::to_string(answer)));
@@ -2123,4 +2193,105 @@ void Calculator::button_right_clicked()
 	decp = false;
 	decp_counter = 1;
 	zeros = false;
+}
+
+void Calculator::Beautiful()
+{
+	button_0->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_1->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_2->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_3->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_4->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_5->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	); 
+	button_6->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_7->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_8->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_9->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_00->setStyleSheet("QPushButton{background-color:white;\
+		color: black;   border - radius: 10px;  border: 2px groove gray; \
+		border - style: outset;}"
+		"QPushButton:hover{background-color:gray; color: black;}"
+		"QPushButton:pressed{background-color:silver;\
+		border - style: inset; }"
+	);
+	button_0->setFont(QFont("0", 20, QFont::Bold));
+	button_1->setFont(QFont("0", 20, QFont::Bold));
+	button_2->setFont(QFont("0", 20, QFont::Bold));
+	button_3->setFont(QFont("0", 20, QFont::Bold));
+	button_4->setFont(QFont("0", 20, QFont::Bold));
+	button_5->setFont(QFont("0", 20, QFont::Bold));
+	button_6->setFont(QFont("0", 20, QFont::Bold));
+	button_7->setFont(QFont("0", 20, QFont::Bold));
+	button_8->setFont(QFont("0", 20, QFont::Bold));
+	button_9->setFont(QFont("0", 20, QFont::Bold));
+	button_00->setFont(QFont("0", 20, QFont::Bold));
+	//button_decpoint->setFont(QFont("0", 12, QFont::Bold));
+	button_clear->setFont(QFont("0", 14, QFont::Bold));
+	button_clearAll->setFont(QFont("0", 14, QFont::Bold));
+	button_backspace->setFont(QFont("0", 14, QFont::Bold));
+	button_plus->setFont(QFont("0", 14, QFont::Black));
+	button_minus->setFont(QFont("0", 14, QFont::Black));
+	button_multiply->setFont(QFont("0", 14, QFont::Black));
+	button_devide->setFont(QFont("0", 14, QFont::Black));
+	button_equal->setFont(QFont("0", 14, QFont::Black));
 }
