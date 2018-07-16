@@ -95,9 +95,9 @@ protected:
 	QLineEdit* up;			//上方输出文本框
 	QLineEdit* down;		//下方输出文本框
 signals:
-private slots:
-	//处理按钮点击信号的槽函数
-	void button_0_clicked();
+	private slots :
+		//处理按钮点击信号的槽函数
+		void button_0_clicked();
 	void button_1_clicked();
 	void button_2_clicked();
 	void button_3_clicked();
@@ -156,3 +156,4 @@ private:
 
 	bool Error;//是否违反计算器规则
 };
+
