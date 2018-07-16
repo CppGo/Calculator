@@ -11,7 +11,7 @@
 #include <queue>
 
 #define PI 3.14159265 
-#define e 2.71828182845
+#define e 2.718281828459045
 
 #define DevideByZero 0			//除以零
 #define InvalidInput 1			//非法输入
@@ -1648,8 +1648,7 @@ void Calculator::button_opp_clicked()
 void Calculator::button_cube_clicked()
 {
 	current_Num = pow(current_Num, 3);
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1658,13 +1657,15 @@ void Calculator::button_cube_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1679,9 +1680,8 @@ void Calculator::button_sq_root_clicked()
 	else
 	{
 		current_Num = pow(current_Num, 0.5);
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1690,13 +1690,15 @@ void Calculator::button_sq_root_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1704,8 +1706,7 @@ void Calculator::button_sq_root_clicked()
 void Calculator::button_square_clicked()
 {
 	current_Num = pow(current_Num, 2);
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1714,13 +1715,15 @@ void Calculator::button_square_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1728,8 +1731,7 @@ void Calculator::button_square_clicked()
 void Calculator::button_sin_clicked()
 {
 	current_Num = sin(current_Num / 180 * PI);
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1738,13 +1740,15 @@ void Calculator::button_sin_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1752,8 +1756,7 @@ void Calculator::button_sin_clicked()
 void Calculator::button_cos_clicked()
 {
 	current_Num = cos(current_Num / 180 * PI);
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1762,13 +1765,15 @@ void Calculator::button_cos_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1783,9 +1788,8 @@ void Calculator::button_tan_clicked()
 	else
 	{
 		current_Num = tan(current_Num / 180 * PI);
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1794,13 +1798,15 @@ void Calculator::button_tan_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1808,8 +1814,7 @@ void Calculator::button_tan_clicked()
 void Calculator::button_Exp_clicked()
 {
 	current_Num = exp(current_Num);
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1818,13 +1823,15 @@ void Calculator::button_Exp_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 
 	down->setText(output);
 	mark_occupy = false;
@@ -1832,7 +1839,7 @@ void Calculator::button_Exp_clicked()
 
 void Calculator::button_ln_clicked()
 {
-	if (current_Num < 0)
+	if (current_Num <= 0)
 	{
 		ERROR(InvalidInput);
 		return;
@@ -1840,9 +1847,8 @@ void Calculator::button_ln_clicked()
 	else
 	{
 		current_Num = log(current_Num);
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1851,20 +1857,22 @@ void Calculator::button_ln_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
 
 void Calculator::button_lg_clicked()
 {
-	if (current_Num < 0)
+	if (current_Num <= 0)
 	{
 		ERROR(InvalidInput);
 		return;
@@ -1872,9 +1880,8 @@ void Calculator::button_lg_clicked()
 	else
 	{
 		current_Num = log10(current_Num);
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1883,13 +1890,15 @@ void Calculator::button_lg_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1897,8 +1906,7 @@ void Calculator::button_lg_clicked()
 void Calculator::button_10_X_clicked()
 {
 	current_Num = pow(10, current_Num);
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1907,13 +1915,15 @@ void Calculator::button_10_X_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1928,9 +1938,8 @@ void Calculator::button_reciprocal_clicked()
 	else
 	{
 		current_Num = 1.0 / current_Num;
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1939,13 +1948,15 @@ void Calculator::button_reciprocal_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -1959,7 +1970,7 @@ void Calculator::button_factorial_clicked()
 	}
 	else if (current_Num == 0)
 	{
-		output = QString::fromStdString(Delete_zeros(std::to_string(1)));
+		current_Num = 1;
 	}
 	else
 	{
@@ -1980,10 +1991,9 @@ void Calculator::button_factorial_clicked()
 		{
 			total *= (i*tgamma(i));
 		}
-		output = QString::fromStdString(Delete_zeros(std::to_string(total)));
 		current_Num = total;
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1992,13 +2002,15 @@ void Calculator::button_factorial_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -2033,9 +2045,8 @@ void Calculator::button_arcsin_clicked()
 	else
 	{
 		current_Num = asin(current_Num) / PI * 180;
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2044,13 +2055,15 @@ void Calculator::button_arcsin_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -2065,9 +2078,8 @@ void Calculator::button_arccos_clicked()
 	else
 	{
 		current_Num = acos(current_Num) / PI * 180;
-		output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	}
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2076,13 +2088,15 @@ void Calculator::button_arccos_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
@@ -2090,8 +2104,7 @@ void Calculator::button_arccos_clicked()
 void Calculator::button_arctan_clicked()
 {
 	current_Num = atan(current_Num) / PI * 180;
-	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
-	if (current_Num == int(current_Num))
+	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2100,13 +2113,15 @@ void Calculator::button_arctan_clicked()
 	{
 		decp = true;
 		int i = 0;
-		for (; Delete_zeros(std::to_string(current_Num))[i] != '.'; i++)
+		string temp = std::to_string(current_Num);
+		for (; temp[i] != '.'; i++)
 		{
 		}
-		int len = Delete_zeros(std::to_string(current_Num)).length() - i - 1;
+		int len = temp.length() - i - 1;
 		if (len >= 6) decp_counter = 7;
 		else decp_counter = len + 1;
 	}
+	output = QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	down->setText(output);
 	mark_occupy = false;
 }
