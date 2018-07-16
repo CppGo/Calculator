@@ -353,7 +353,7 @@ string calculate(string str)
 		else if (str[i] >= '0'&&str[i] <= '9')
 		{
 			int flag1 = 1;
-			for (int j = 0; j<10; j++)
+			for (int j = 0; j < 10; j++)
 			{
 				if (i == index[j])
 				{
@@ -362,7 +362,7 @@ string calculate(string str)
 
 			}
 			int j;
-			for (j = i; str[j] != '/' &&str[j] != '*' &&str[j] != '+' && str[j] != '-'&&str[j] != ')'&&str[j] != '('&&j<str.length(); j++)
+			for (j = i; str[j] != '/' &&str[j] != '*' &&str[j] != '+' && str[j] != '-'&&str[j] != ')'&&str[j] != '('&&j < str.length(); j++)
 			{
 
 			}
@@ -524,9 +524,9 @@ int Calculator::per_judge(string str)
 				if (right > left)
 					return BracketsWrong; //error(右括号在左括号前面）
 			}
-			if (right < left)
+			Brackets_counter = left - right;
+			if (right <= left)//这里补充等于是为了因为去除bug并且无伤大雅
 			{
-				Brackets_counter = left - right;
 				if (str[0] == '-')
 					return NBandED;
 				return NeedBrackets;//补充右括号
@@ -1648,7 +1648,7 @@ void Calculator::button_opp_clicked()
 void Calculator::button_cube_clicked()
 {
 	current_Num = pow(current_Num, 3);
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1681,7 +1681,7 @@ void Calculator::button_sq_root_clicked()
 	{
 		current_Num = pow(current_Num, 0.5);
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1706,7 +1706,7 @@ void Calculator::button_sq_root_clicked()
 void Calculator::button_square_clicked()
 {
 	current_Num = pow(current_Num, 2);
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1731,7 +1731,7 @@ void Calculator::button_square_clicked()
 void Calculator::button_sin_clicked()
 {
 	current_Num = sin(current_Num / 180 * PI);
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1756,7 +1756,7 @@ void Calculator::button_sin_clicked()
 void Calculator::button_cos_clicked()
 {
 	current_Num = cos(current_Num / 180 * PI);
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1789,7 +1789,7 @@ void Calculator::button_tan_clicked()
 	{
 		current_Num = tan(current_Num / 180 * PI);
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1814,7 +1814,7 @@ void Calculator::button_tan_clicked()
 void Calculator::button_Exp_clicked()
 {
 	current_Num = exp(current_Num);
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1848,7 +1848,7 @@ void Calculator::button_ln_clicked()
 	{
 		current_Num = log(current_Num);
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1881,7 +1881,7 @@ void Calculator::button_lg_clicked()
 	{
 		current_Num = log10(current_Num);
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1906,7 +1906,7 @@ void Calculator::button_lg_clicked()
 void Calculator::button_10_X_clicked()
 {
 	current_Num = pow(10, current_Num);
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1939,7 +1939,7 @@ void Calculator::button_reciprocal_clicked()
 	{
 		current_Num = 1.0 / current_Num;
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -1993,7 +1993,7 @@ void Calculator::button_factorial_clicked()
 		}
 		current_Num = total;
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2046,7 +2046,7 @@ void Calculator::button_arcsin_clicked()
 	{
 		current_Num = asin(current_Num) / PI * 180;
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2079,7 +2079,7 @@ void Calculator::button_arccos_clicked()
 	{
 		current_Num = acos(current_Num) / PI * 180;
 	}
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2104,7 +2104,7 @@ void Calculator::button_arccos_clicked()
 void Calculator::button_arctan_clicked()
 {
 	current_Num = atan(current_Num) / PI * 180;
-	if (double(current_Num - int(current_Num))>-0.000001 && double(current_Num - int(current_Num))<0.000001)
+	if (double(current_Num - int(current_Num)) > -0.000001 && double(current_Num - int(current_Num)) < 0.000001)
 	{
 		decp = false;
 		decp_counter = 1;
@@ -2158,7 +2158,12 @@ void Calculator::button_right_clicked()
 	if (Left_counter == 0)//没有左括号时不能按右括号
 		return;
 	//将当前数字压入上方算式然后再补充右括号
-	to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
+	
+	//补充：先检查前一个字符是否为右括号
+	if (to_solve[to_solve.length() - 1] == ')')
+		;//不将当前数字压入
+	else
+		to_solve += QString::fromStdString(Delete_zeros(std::to_string(current_Num)));
 	//加上右括号
 	to_solve += ')';
 	up->setText(to_solve);
@@ -2202,6 +2207,14 @@ void Calculator::button_right_clicked()
 		break;
 	case Brackets:
 		answer = Solve(to_solve, Method);
+		break;
+	case NBandED:
+		for (int i = 0; i < Brackets_counter; ++i)
+		{
+			temp += ")";
+		}
+		temp.prepend('0');
+		answer = Solve(temp, Method);
 		break;
 	}
 	//当前数字归零
